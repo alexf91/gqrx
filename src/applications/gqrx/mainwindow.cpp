@@ -45,6 +45,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QSvgWidget>
+#include <QPluginLoader>
 #include "qtgui/ioconfig.h"
 #include "mainwindow.h"
 
@@ -56,6 +57,7 @@
 #include "remote_control_settings.h"
 
 #include "qtgui/bookmarkstaglist.h"
+#include "plugins/plugininterface.h"
 
 MainWindow::MainWindow(const QString cfgfile, bool edit_conf, QWidget *parent) :
     QMainWindow(parent),
@@ -702,6 +704,28 @@ void MainWindow::storeSession()
                 m_settings->setValue("receiver/filter_high_cut", fhi);
             }
         }
+    }
+}
+
+/**
+ * Load and register a plugin
+ */
+bool MainWindow::loadPlugin(const QString pluginfile)
+{
+    QPluginLoader loader(pluginfile);
+    if (auto instance = loader.instance()) {
+        if (auto plugin = qobject_cast<PluginInterface*>(instance)) {
+            plugin->printMessage("Plugin loaded");
+            return true;
+        }
+        else {
+            qDebug() << "Unrecognized plugin type";
+            return false;
+        }
+    }
+    else {
+        qDebug() << loader.errorString();
+        return false;
     }
 }
 
@@ -1834,6 +1858,8 @@ void MainWindow::on_actionLoadPlugin_triggered()
 
     if (!pluginfile.endsWith(".so", Qt::CaseSensitive))
         pluginfile.append(".so");
+
+    loadPlugin(pluginfile);
 
     // store last dir
     QFileInfo fi(pluginfile);

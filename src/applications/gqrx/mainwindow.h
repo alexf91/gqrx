@@ -65,6 +65,8 @@ public:
     bool saveConfig(const QString cfgfile);
     void storeSession();
 
+    bool loadPlugin(const QString pluginfile);
+
     bool configOk; /*!< Main app uses this flag to know whether we should abort or continue. */
 
 public slots:

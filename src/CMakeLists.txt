@@ -3,6 +3,7 @@
 add_subdirectory(applications)
 add_subdirectory(dsp)
 add_subdirectory(interfaces)
+add_subdirectory(plugins)
 add_subdirectory(qtgui)
 add_subdirectory(receivers)
 
