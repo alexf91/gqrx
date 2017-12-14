@@ -174,6 +174,8 @@ link_directories(
 
 # Add subdirectories
 add_subdirectory(src)
+set(GQRX_BASE_DIR ${PROJECT_SOURCE_DIR})
+add_subdirectory(plugins)
 
 # uninstall target
 # https://cmake.org/Wiki/CMake_FAQ#Can_I_do_.22make_uninstall.22_with_CMake.3F
