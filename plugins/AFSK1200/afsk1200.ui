@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Afsk1200Win</class>
- <widget class="QMainWindow" name="Afsk1200Win">
+ <class>AFSK1200</class>
+ <widget class="QMainWindow" name="AFSK1200">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -139,7 +139,7 @@
   <connection>
    <sender>actionClose</sender>
    <signal>triggered()</signal>
-   <receiver>Afsk1200Win</receiver>
+   <receiver>AFSK1200</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">

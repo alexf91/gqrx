@@ -713,7 +713,7 @@ void MainWindow::storeSession()
  */
 bool MainWindow::loadPlugin(const QString pluginfile)
 {
-    QPluginLoader loader(pluginfile);
+    QPluginLoader loader(pluginfile, this);
     if (auto instance = loader.instance()) {
         if (auto plugin = qobject_cast<PluginInterface*>(instance)) {
 
@@ -725,6 +725,16 @@ bool MainWindow::loadPlugin(const QString pluginfile)
             }
             plugin->printMessage("Plugin loaded");
             pluginList.push_back(plugin);
+
+            // Show the plugin if it's a widget
+            if (auto widget = qobject_cast<QWidget*>(instance)) {
+                qDebug() << "Plugin is a widget";
+                widget->show();
+            }
+            else {
+                qDebug() << "Plugin is not a widget";
+            }
+
             return true;
         }
         else {

@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.2.0)
 
 project(echoplugin)
 
-message(${GQRX_BASE_DIR})
 if(NOT DEFINED GQRX_BASE_DIR)
     message(FATAL_ERROR "GQRX_BASE_DIR is not defined")
 endif()
@@ -11,8 +10,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5Widgets REQUIRED)
-
-set(COMPILE_OPTIONS -std=c++11)
 
 include_directories(${GQRX_BASE_DIR}/src/plugins)
 
