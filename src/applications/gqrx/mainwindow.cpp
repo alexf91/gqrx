@@ -716,6 +716,7 @@ bool MainWindow::loadPlugin(const QString pluginfile)
     if (auto instance = loader.instance()) {
         if (auto plugin = qobject_cast<PluginInterface*>(instance)) {
             plugin->printMessage("Plugin loaded");
+            pluginList.push_back(&loader);
             return true;
         }
         else {
