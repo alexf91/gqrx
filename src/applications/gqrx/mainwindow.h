@@ -206,6 +206,7 @@ private slots:
     int  on_actionIoConfig_triggered();
     void on_actionLoadSettings_triggered();
     void on_actionSaveSettings_triggered();
+    void on_actionLoadPlugin_triggered();
     void on_actionSaveWaterfall_triggered();
     void on_actionIqTool_triggered();
     void on_actionFullScreen_triggered(bool checked);

@@ -1818,6 +1818,29 @@ void MainWindow::on_actionLoadSettings_triggered()
         m_last_dir = fi.absolutePath();
 }
 
+/** Load plugin activated by user. */
+void MainWindow::on_actionLoadPlugin_triggered()
+{
+    /* TODO: Create seperate settings variable for plugin directory */
+    QString pluginfile;
+    pluginfile = QFileDialog::getOpenFileName(this, tr("Load plugin"),
+                                              m_last_dir.isEmpty() ? m_cfg_dir : m_last_dir,
+                                              tr("Plugin (*.so)"));
+
+    qDebug() << "Plugin to open:" << pluginfile;
+
+    if (pluginfile.isEmpty())
+        return;
+
+    if (!pluginfile.endsWith(".so", Qt::CaseSensitive))
+        pluginfile.append(".so");
+
+    // store last dir
+    QFileInfo fi(pluginfile);
+    if (m_cfg_dir != fi.absolutePath())
+        m_last_dir = fi.absolutePath();
+}
+
 /** Save configuration activated by user. */
 void MainWindow::on_actionSaveSettings_triggered()
 {

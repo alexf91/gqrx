@@ -181,6 +181,7 @@
     <addaction name="actionIoConfig"/>
     <addaction name="actionLoadSettings"/>
     <addaction name="actionSaveSettings"/>
+    <addaction name="actionLoadPlugin"/>
     <addaction name="separator"/>
     <addaction name="actionSaveWaterfall"/>
     <addaction name="separator"/>
@@ -255,7 +256,7 @@
   </widget>
   <action name="actionQuit">
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
    <property name="toolTip">
     <string>Quit application</string>
@@ -266,7 +267,7 @@
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About Gqrx</string>
+    <string>&amp;About Gqrx</string>
    </property>
    <property name="toolTip">
     <string>Information about Gqrx</string>
@@ -274,7 +275,7 @@
   </action>
   <action name="actionAboutQt">
    <property name="text">
-    <string>About Qt</string>
+    <string>About &amp;Qt</string>
    </property>
    <property name="toolTip">
     <string>About the Qt toolkit</string>
@@ -289,7 +290,7 @@
      <normaloff>:/icons/icons/play.svg</normaloff>:/icons/icons/play.svg</iconset>
    </property>
    <property name="text">
-    <string>Start DSP</string>
+    <string>&amp;Start DSP</string>
    </property>
    <property name="toolTip">
     <string>Start DSP</string>
@@ -303,7 +304,7 @@
   </action>
   <action name="actionAFSK1200">
    <property name="text">
-    <string>AFSK1200 Decoder</string>
+    <string>AFSK1200 &amp;Decoder</string>
    </property>
    <property name="toolTip">
     <string>Start AFSK1200 decoder</string>
@@ -336,7 +337,7 @@
      <normaloff>:/icons/icons/flash.svg</normaloff>:/icons/icons/flash.svg</iconset>
    </property>
    <property name="text">
-    <string>I/O Devices</string>
+    <string>&amp;I/O Devices</string>
    </property>
    <property name="toolTip">
     <string>Configure I/O devices</string>
@@ -354,7 +355,7 @@
      <normaloff>:/icons/icons/help.svg</normaloff>:/icons/icons/help.svg</iconset>
    </property>
    <property name="text">
-    <string>Gqrx user group</string>
+    <string>&amp;Gqrx user group</string>
    </property>
    <property name="toolTip">
     <string>Discussion group for Gqrx users</string>
@@ -384,7 +385,7 @@
      <normaloff>:/icons/icons/folder.svg</normaloff>:/icons/icons/folder.svg</iconset>
    </property>
    <property name="text">
-    <string>Load settings</string>
+    <string>&amp;Load settings</string>
    </property>
    <property name="toolTip">
     <string>Load previously stored configuration</string>
@@ -402,7 +403,7 @@
      <normaloff>:/icons/icons/floppy.svg</normaloff>:/icons/icons/floppy.svg</iconset>
    </property>
    <property name="text">
-    <string>Save settings</string>
+    <string>Sa&amp;ve settings</string>
    </property>
    <property name="toolTip">
     <string>Save current configuration</string>
@@ -420,7 +421,7 @@
      <normaloff>:/icons/icons/bookmark-new.svg</normaloff>:/icons/icons/bookmark-new.svg</iconset>
    </property>
    <property name="text">
-    <string>Add bookmark</string>
+    <string>&amp;Add bookmark</string>
    </property>
    <property name="toolTip">
     <string>Bookmark the current frequency and mode (Ctrl+Shift+B)</string>
@@ -468,7 +469,7 @@
      <normaloff>:/icons/icons/signal.svg</normaloff>:/icons/icons/signal.svg</iconset>
    </property>
    <property name="text">
-    <string>I/Q recorder</string>
+    <string>&amp;I/Q recorder</string>
    </property>
    <property name="toolTip">
     <string>Record and play I/Q data</string>
@@ -486,7 +487,7 @@
      <normaloff>:/icons/icons/info.svg</normaloff>:/icons/icons/info.svg</iconset>
    </property>
    <property name="text">
-    <string>News</string>
+    <string>&amp;News</string>
    </property>
    <property name="toolTip">
     <string>Show news about this release</string>
@@ -498,7 +499,7 @@
      <normaloff>:/icons/icons/info.svg</normaloff>:/icons/icons/info.svg</iconset>
    </property>
    <property name="text">
-    <string>Remote control</string>
+    <string>&amp;Remote control</string>
    </property>
    <property name="toolTip">
     <string>Remote control protocol</string>
@@ -506,13 +507,25 @@
   </action>
   <action name="actionSaveWaterfall">
    <property name="text">
-    <string>Save waterfall</string>
+    <string>Save &amp;waterfall</string>
    </property>
    <property name="statusTip">
     <string>Save the current waterfall to a graphics file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionLoadPlugin">
+   <property name="icon">
+    <iconset resource="../../../resources/icons.qrc">
+     <normaloff>:/icons/icons/signal.svg</normaloff>:/icons/icons/signal.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Load Plugin</string>
+   </property>
+   <property name="statusTip">
+    <string>Load a plugin that extends Gqrx</string>
    </property>
   </action>
  </widget>
