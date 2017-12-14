@@ -215,7 +215,6 @@
     <addaction name="separator"/>
     <addaction name="actionIqTool"/>
     <addaction name="separator"/>
-    <addaction name="actionAFSK1200"/>
     <addaction name="separator"/>
    </widget>
    <addaction name="menu_File"/>
@@ -522,7 +521,7 @@
      <normaloff>:/icons/icons/signal.svg</normaloff>:/icons/icons/signal.svg</iconset>
    </property>
    <property name="text">
-    <string>Load Plugin</string>
+    <string>Load &amp;Plugin</string>
    </property>
    <property name="statusTip">
     <string>Load a plugin that extends Gqrx</string>

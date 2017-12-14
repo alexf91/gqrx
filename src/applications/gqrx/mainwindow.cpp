@@ -59,14 +59,15 @@
 #include "qtgui/bookmarkstaglist.h"
 #include "plugins/plugininterface.h"
 
+#define SNIFFER_BUFFER_SIZE 48000
+
 MainWindow::MainWindow(const QString cfgfile, bool edit_conf, QWidget *parent) :
     QMainWindow(parent),
     configOk(true),
     ui(new Ui::MainWindow),
     d_lnb_lo(0),
     d_hw_freq(0),
-    d_have_audio(true),
-    dec_afsk1200(0)
+    d_have_audio(true)
 {
     ui->setupUi(this);
     Bookmarks::create();
@@ -715,8 +716,15 @@ bool MainWindow::loadPlugin(const QString pluginfile)
     QPluginLoader loader(pluginfile);
     if (auto instance = loader.instance()) {
         if (auto plugin = qobject_cast<PluginInterface*>(instance)) {
+
+            // Start the sniffer when the first plugin is loaded
+            if (pluginList.size() == 0) {
+                if (rx->start_sniffer(22050, SNIFFER_BUFFER_SIZE) == receiver::STATUS_OK) {
+                    dec_timer->start(100);
+                }
+            }
             plugin->printMessage("Plugin loaded");
-            pluginList.push_back(&loader);
+            pluginList.push_back(plugin);
             return true;
         }
         else {
@@ -2006,77 +2014,20 @@ void MainWindow::on_actionRemoteConfig_triggered()
     delete rcs;
 }
 
-
-#define DATA_BUFFER_SIZE 48000
-
-/**
- * AFSK1200 decoder action triggered.
- *
- * This slot is called when the user activates the AFSK1200
- * action. It will create an AFSK1200 decoder window and start
- * and start pushing data from the receiver to it.
- */
-void MainWindow::on_actionAFSK1200_triggered()
-{
-
-    if (dec_afsk1200 != 0)
-    {
-        qDebug() << "AFSK1200 decoder already active.";
-        dec_afsk1200->raise();
-    }
-    else
-    {
-        qDebug() << "Starting AFSK1200 decoder.";
-
-        /* start sample sniffer */
-        if (rx->start_sniffer(22050, DATA_BUFFER_SIZE) == receiver::STATUS_OK)
-        {
-            dec_afsk1200 = new Afsk1200Win(this);
-            connect(dec_afsk1200, SIGNAL(windowClosed()), this, SLOT(afsk1200win_closed()));
-            dec_afsk1200->show();
-
-            dec_timer->start(100);
-        }
-        else
-            QMessageBox::warning(this, tr("Gqrx error"),
-                                 tr("Error starting sample sniffer.\n"
-                                    "Close all data decoders and try again."),
-                                 QMessageBox::Ok, QMessageBox::Ok);
-    }
-}
-
-
-/**
- * Destroy AFSK1200 decoder window got closed.
- *
- * This slot is connected to the windowClosed() signal of the AFSK1200 decoder
- * object. We need this to properly destroy the object, stop timeout and clean
- * up whatever need to be cleaned up.
- */
-void MainWindow::afsk1200win_closed()
-{
-    /* stop cyclic processing */
-    dec_timer->stop();
-    rx->stop_sniffer();
-
-    /* delete decoder object */
-    delete dec_afsk1200;
-    dec_afsk1200 = 0;
-}
-
-
 /**
  * Cyclic processing for acquiring samples from receiver and processing them
  * with data decoders (see dec_* objects)
  */
 void MainWindow::decoderTimeout()
 {
-    float buffer[DATA_BUFFER_SIZE];
+    float buffer[SNIFFER_BUFFER_SIZE];
     unsigned int num;
 
     rx->get_sniffer_data(&buffer[0], num);
-    if (dec_afsk1200)
-        dec_afsk1200->process_samples(&buffer[0], num);
+
+    for (auto &plugin : pluginList) {
+        plugin->processSamples(&buffer[0], num);
+    }
 }
 
 void MainWindow::setRdsDecoder(bool checked)

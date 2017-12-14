@@ -33,6 +33,7 @@ public:
     virtual ~PluginInterface() {};
 
     virtual void printMessage(const QString &msg) = 0;
+    virtual void processSamples(float *buffer, int length) = 0;
 
 };
 

@@ -1,8 +1,6 @@
 #######################################################################################################################
 # Add the source files to SRCS_LIST
 add_source_files(SRCS_LIST
-	afsk1200win.cpp
-	afsk1200win.h
 	agc_options.cpp
 	agc_options.h
 	audio_options.cpp
@@ -49,7 +47,6 @@ add_source_files(SRCS_LIST
 #######################################################################################################################
 # Add the source files to UI_SRCS_LIST
 add_source_files(UI_SRCS_LIST
-	afsk1200win.ui
 	agc_options.ui
 	audio_options.ui
 	demod_options.ui

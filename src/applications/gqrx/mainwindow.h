@@ -40,10 +40,11 @@
 #include "qtgui/dockfft.h"
 #include "qtgui/dockbookmarks.h"
 #include "qtgui/dockrds.h"
-#include "qtgui/afsk1200win.h"
 #include "qtgui/iq_tool.h"
 
 #include "applications/gqrx/remote_control.h"
+
+#include "plugins/plugininterface.h"
 
 // see https://bugreports.qt-project.org/browse/QTBUG-22829
 #ifndef Q_MOC_RUN
@@ -107,7 +108,6 @@ private:
 
 
     /* data decoders */
-    Afsk1200Win    *dec_afsk1200;
     bool            dec_rds;
 
     QTimer   *dec_timer;
@@ -123,7 +123,7 @@ private:
     std::map<QString, QVariant> devList;
 
     /* plugins */
-    std::vector<QPluginLoader *> pluginList;
+    std::vector<PluginInterface *> pluginList;
 
     // dummy widget to enforce linking to QtSvg
     QSvgWidget      *qsvg_dummy;
@@ -218,7 +218,6 @@ private slots:
     void on_actionFullScreen_triggered(bool checked);
     void on_actionRemoteControl_triggered(bool checked);
     void on_actionRemoteConfig_triggered();
-    void on_actionAFSK1200_triggered();
     void on_actionUserGroup_triggered();
     void on_actionNews_triggered();
     void on_actionRemoteProtocol_triggered();
@@ -228,7 +227,6 @@ private slots:
 
 
     /* window close signals */
-    void afsk1200win_closed();
     int  firstTimeConfig();
 
     /* cyclic processing */
