@@ -25,12 +25,15 @@
 #define PLUGININTERFACE_H
 
 #include <QtPlugin>
+#include <QObject>
 #include <QString>
 
 class PluginInterface
 {
 public:
     virtual ~PluginInterface() {};
+
+    virtual void initialize(QObject *parent) = 0;
 
     virtual void printMessage(const QString &msg) = 0;
     virtual void processSamples(float *buffer, int length) = 0;

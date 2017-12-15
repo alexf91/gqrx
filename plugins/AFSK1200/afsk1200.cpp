@@ -37,6 +37,12 @@ AFSK1200::~AFSK1200()
 }
 
 
+void AFSK1200::initialize(QObject *parent)
+{
+    this->setParent(qobject_cast<QWidget *>(parent));
+}
+
+
 void AFSK1200::printMessage(const QString &msg)
 {
     qDebug() << "AFSK1200:" << msg;

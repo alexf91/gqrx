@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QLibrary>
 #include <QPluginLoader>
+#include <QMainWindow>
 
 #include "dockplugins.h"
 #include "ui_dockplugins.h"
@@ -125,10 +126,12 @@ void DockPlugins::loadButtonClicked(void)
     /* Load the plugin if it's not loaded */
     if (not widgets->loader->isLoaded()) {
         qDebug() << "Loading plugin" << widgets->label->text();
-        widgets->loadButton->setText("Unload");
 
         /* Try to get an instance */
         if (auto instance = widgets->loader->instance()) {
+            /* At this point, we have loaded the plugin */
+            widgets->loadButton->setText("Unload");
+
             /* Check if plugin implements our interface */
             if (auto plugin = qobject_cast<PluginInterface*>(instance)) {
                 qDebug() << "PluginInterface detected";
@@ -140,15 +143,32 @@ void DockPlugins::loadButtonClicked(void)
                 /* Enable visibility button if it's a GUI widget */
                 if (qobject_cast<QWidget*>(instance)) {
                     qDebug() << "Plugin is a widget";
-                    widgets->showButton = new QPushButton("Show", this);
+                    widgets->showButton = new QPushButton("Toggle", this);
                     widgets->showButton->setMinimumWidth(60);
                     widgets->showButton->setMaximumWidth(60);
+
+                    /*
+                     * TODO: This is terrible code. The whole initialization stuff
+                     * should not depend on the type of the widget. We shouldn't
+                     * have to hardcode different cases for different widget types.
+                     */
+                    if (auto widget = qobject_cast<QDockWidget *>(instance)) {
+                        auto main = qobject_cast<QMainWindow *>(this->parent());
+                        main->addDockWidget(Qt::LeftDockWidgetArea, widget);
+                        plugin->initialize(this->parent());
+                    }
+                    else {
+                        plugin->initialize(nullptr);
+                    }
 
                     ui->gridLayout->addWidget(widgets->showButton, i, 1);
                     connect(widgets->showButton, SIGNAL(clicked(bool)), this, SLOT(showButtonClicked(void)));
                 }
                 else {
                     qDebug() << "Plugin is not a widget";
+
+                    /* TODO: Terrible as well, belongs to the part above */
+                    plugin->initialize(this->parent());
                 }
             }
             else {
@@ -203,11 +223,9 @@ void DockPlugins::showButtonClicked(void)
     if (auto widget = qobject_cast<QWidget*>(widgets->instance)) {
         if (widget->isVisible()) {
             widget->hide();
-            widgets->showButton->setText("Show");
         }
         else {
             widget->show();
-            widgets->showButton->setText("Hide");
         }
     }
 }

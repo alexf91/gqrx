@@ -21,6 +21,7 @@ public:
     ~AFSK1200();
 
     /* PluginInterface */
+    void initialize(QObject *parent);
     void printMessage(const QString &msg) override;
     void processSamples(float *buffer, int length) override;
 

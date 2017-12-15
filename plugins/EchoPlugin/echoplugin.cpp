@@ -7,6 +7,11 @@ EchoPlugin::~EchoPlugin()
     qDebug() << "EchoPlugin unloaded";
 }
 
+void EchoPlugin::initialize(QObject *parent)
+{
+    this->setParent(parent);
+}
+
 void EchoPlugin::printMessage(const QString &msg)
 {
     qDebug() << "EchoPlugin:" << msg;
