@@ -24,6 +24,8 @@ add_source_files(SRCS_LIST
 	dockfft.h
 	dockinputctl.cpp
 	dockinputctl.h
+	dockplugins.cpp
+	dockplugins.h
 	dockrds.cpp
 	dockrds.h
 	dockrxopt.cpp
@@ -54,6 +56,7 @@ add_source_files(UI_SRCS_LIST
 	dockbookmarks.ui
 	dockfft.ui
 	dockinputctl.ui
+	dockplugins.ui
 	dockrds.ui
 	dockrxopt.ui
 	ioconfig.ui

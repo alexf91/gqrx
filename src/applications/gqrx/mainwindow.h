@@ -40,6 +40,7 @@
 #include "qtgui/dockfft.h"
 #include "qtgui/dockbookmarks.h"
 #include "qtgui/dockrds.h"
+#include "qtgui/dockplugins.h"
 #include "qtgui/iq_tool.h"
 
 #include "applications/gqrx/remote_control.h"
@@ -103,6 +104,7 @@ private:
     DockFft        *uiDockFft;
     DockBookmarks  *uiDockBookmarks;
     DockRDS        *uiDockRDS;
+    DockPlugins    *uiDockPlugins;
 
     CIqTool        *iq_tool;
 
