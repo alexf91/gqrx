@@ -51,7 +51,7 @@ void AFSK1200::printMessage(const QString &msg)
 /*! \brief Process new set of samples. */
 void AFSK1200::processSamples(float *buffer, int length)
 {
-    int overlap = 18;
+    int overlap = 40;
     int i;
 
     for (i = 0; i < length; i++) {

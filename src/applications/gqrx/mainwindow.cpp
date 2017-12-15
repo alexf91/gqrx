@@ -2257,6 +2257,6 @@ void MainWindow::setSnifferState(bool state)
     /* Activate */
     else if (not rx->is_snifffer_active() and state) {
         dec_timer->start(100);
-        rx->start_sniffer(22050, SNIFFER_BUFFER_SIZE);
+        rx->start_sniffer(48000, SNIFFER_BUFFER_SIZE);
     }
 }
