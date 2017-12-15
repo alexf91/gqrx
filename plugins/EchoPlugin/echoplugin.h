@@ -10,6 +10,7 @@ class EchoPlugin : public QObject, public PluginInterface
     Q_INTERFACES(PluginInterface)
 
 public:
+    ~EchoPlugin();
     void printMessage(const QString &msg) override;
     void processSamples(float *buffer, int length) override;
 };

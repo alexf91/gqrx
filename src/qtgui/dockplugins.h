@@ -82,7 +82,6 @@ private:
 private:
     Ui::DockPlugins *ui;                /* The Qt designer UI file */
     QString searchDir;                  /* Directory to look for plugins */
-    QGridLayout *pluginLayout;          /* Grid layout containing plugin controls */
     QList<PluginWidgets *> pluginWidgets; /* Created plugin loaders */
     QList<PluginInterface *> loadedPlugins; /* Currently loaded plugins */
 };

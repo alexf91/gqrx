@@ -2,6 +2,11 @@
 
 #include "echoplugin.h"
 
+EchoPlugin::~EchoPlugin()
+{
+    qDebug() << "EchoPlugin unloaded";
+}
+
 void EchoPlugin::printMessage(const QString &msg)
 {
     qDebug() << "EchoPlugin:" << msg;

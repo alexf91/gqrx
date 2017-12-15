@@ -41,14 +41,6 @@ DockPlugins::DockPlugins(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    /* The following steps create a grid layout in a scroll area */
-    pluginLayout = new QGridLayout();
-    pluginLayout->setObjectName(QString::fromUtf8("pluginLayout"));
-
-    QWidget *viewport = new QWidget;
-    viewport->setLayout(pluginLayout);
-    ui->scrollArea->setWidget(viewport);
-
     /* TODO: Change to seperate plugin directory */
     auto xdgdir = qgetenv("XDG_CONFIG_HOME");
     if (xdgdir.isEmpty())
@@ -66,36 +58,19 @@ DockPlugins::~DockPlugins()
     unloadAll();
 
     delete ui;
-    delete pluginLayout;
 }
 
 void DockPlugins::on_refreshButton_clicked(void)
 {
-    /* Clean up the layout */
-    while (not pluginWidgets.isEmpty()) {
-        auto widgets = pluginWidgets.takeFirst();
-        if (widgets->label != nullptr) {
-            pluginLayout->removeWidget(widgets->label);
-            delete widgets->label;
-        }
-        if (widgets->showButton != nullptr) {
-            pluginLayout->removeWidget(widgets->showButton);
-            delete widgets->showButton;
-        }
-        if (widgets->loadButton != nullptr) {
-            pluginLayout->removeWidget(widgets->loadButton);
-            delete widgets->loadButton;
-        }
-        delete widgets;
-    }
 
+    unloadAll();
 
     /* get files in searchpath */
     auto files = QDir(searchDir).entryList(QDir::Files);
 
     int i = 0;
     for (auto &file : files) {
-        if (!QLibrary::isLibrary(file))
+        if (not QLibrary::isLibrary(file))
             continue;
 
         auto path = QDir::cleanPath(searchDir + QDir::separator() + file);
@@ -103,8 +78,15 @@ void DockPlugins::on_refreshButton_clicked(void)
         auto widgets = new PluginWidgets;
 
         widgets->loader = new QPluginLoader(path, this);
+        auto meta = widgets->loader->metaData()["MetaData"].toObject();
+
         widgets->instance = nullptr;
         widgets->label = new QLabel(file, this);
+
+        auto desc = meta["description"];
+        if (desc.isString())
+            widgets->label->setToolTip(desc.toString());
+
         widgets->showButton = nullptr;
         widgets->loadButton = new QPushButton("Load", this);
         widgets->loadButton->setMaximumWidth(60);
@@ -112,8 +94,8 @@ void DockPlugins::on_refreshButton_clicked(void)
         connect(widgets->loadButton, SIGNAL(clicked(bool)), this, SLOT(loadButtonClicked(void)));
 
         pluginWidgets.append(widgets);
-        pluginLayout->addWidget(widgets->label, i, 0);
-        pluginLayout->addWidget(widgets->loadButton, i, 2);
+        ui->gridLayout->addWidget(widgets->label, i, 0);
+        ui->gridLayout->addWidget(widgets->loadButton, i, 2);
 
         i++;
     }
@@ -162,7 +144,7 @@ void DockPlugins::loadButtonClicked(void)
                     widgets->showButton->setMinimumWidth(60);
                     widgets->showButton->setMaximumWidth(60);
 
-                    pluginLayout->addWidget(widgets->showButton, i, 1);
+                    ui->gridLayout->addWidget(widgets->showButton, i, 1);
                     connect(widgets->showButton, SIGNAL(clicked(bool)), this, SLOT(showButtonClicked(void)));
                 }
                 else {
@@ -187,12 +169,14 @@ void DockPlugins::loadButtonClicked(void)
             }
         }
 
-        widgets->loader->unload();
+        if (not widgets->loader->unload())
+            qDebug() << "Plugin could not be unloaded";
+
         widgets->loadButton->setText("Load");
 
         /* Remove the "show" button */
         if (widgets->showButton != nullptr) {
-            pluginLayout->removeWidget(widgets->showButton);
+            ui->gridLayout->removeWidget(widgets->showButton);
             delete widgets->showButton;
             widgets->showButton = nullptr;
         }
@@ -231,10 +215,31 @@ void DockPlugins::showButtonClicked(void)
 /* Unload all plugins */
 void DockPlugins::unloadAll(void)
 {
-    for (auto &widgets : pluginWidgets) {
+    /* Clean up the layout */
+    while (not pluginWidgets.isEmpty()) {
+        auto widgets = pluginWidgets.takeFirst();
+
         if (widgets->loader->isLoaded())
-            widgets->loader->unload();
+            if (not widgets->loader->unload())
+                qDebug() << "Plugin could not be unloaded";
+
+        if (widgets->label != nullptr) {
+            ui->gridLayout->removeWidget(widgets->label);
+            delete widgets->label;
+        }
+        if (widgets->showButton != nullptr) {
+            ui->gridLayout->removeWidget(widgets->showButton);
+            delete widgets->showButton;
+        }
+        if (widgets->loadButton != nullptr) {
+            ui->gridLayout->removeWidget(widgets->loadButton);
+            delete widgets->loadButton;
+        }
+        delete widgets;
     }
+
+    loadedPlugins.clear();
+    emit pluginsRunning(loadedPlugins.count() != 0);
 }
 
 /* Notify all plugins about new samples */
