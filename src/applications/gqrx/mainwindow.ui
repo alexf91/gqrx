@@ -181,7 +181,6 @@
     <addaction name="actionIoConfig"/>
     <addaction name="actionLoadSettings"/>
     <addaction name="actionSaveSettings"/>
-    <addaction name="actionLoadPlugin"/>
     <addaction name="separator"/>
     <addaction name="actionSaveWaterfall"/>
     <addaction name="separator"/>

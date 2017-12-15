@@ -66,6 +66,11 @@ public:
     explicit DockPlugins(QWidget *parent = 0);
     ~DockPlugins();
 
+    void processSamples(float *buffer, int length);
+
+signals:
+    void pluginsRunning(bool value);
+
 private slots:
     void on_refreshButton_clicked(void);
     void loadButtonClicked(void);

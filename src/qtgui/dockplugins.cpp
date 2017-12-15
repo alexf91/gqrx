@@ -153,6 +153,7 @@ void DockPlugins::loadButtonClicked(void)
                 widgets->instance = instance;
 
                 loadedPlugins.append(plugin);
+                emit pluginsRunning(loadedPlugins.count() != 0);
 
                 /* Enable visibility button if it's a GUI widget */
                 if (qobject_cast<QWidget*>(instance)) {
@@ -195,6 +196,8 @@ void DockPlugins::loadButtonClicked(void)
             delete widgets->showButton;
             widgets->showButton = nullptr;
         }
+
+        emit pluginsRunning(loadedPlugins.count() != 0);
     }
 }
 
@@ -231,5 +234,13 @@ void DockPlugins::unloadAll(void)
     for (auto &widgets : pluginWidgets) {
         if (widgets->loader->isLoaded())
             widgets->loader->unload();
+    }
+}
+
+/* Notify all plugins about new samples */
+void DockPlugins::processSamples(float *buffer, int length)
+{
+    for (auto &plugin : loadedPlugins) {
+        plugin->processSamples(buffer, length);
     }
 }

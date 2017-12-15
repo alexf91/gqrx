@@ -45,8 +45,6 @@
 
 #include "applications/gqrx/remote_control.h"
 
-#include "plugins/plugininterface.h"
-
 // see https://bugreports.qt-project.org/browse/QTBUG-22829
 #ifndef Q_MOC_RUN
 #include "applications/gqrx/receiver.h"
@@ -67,8 +65,6 @@ public:
     bool loadConfig(const QString cfgfile, bool check_crash, bool restore_mainwindow);
     bool saveConfig(const QString cfgfile);
     void storeSession();
-
-    bool loadPlugin(const QString pluginfile);
 
     bool configOk; /*!< Main app uses this flag to know whether we should abort or continue. */
 
@@ -123,9 +119,6 @@ private:
     RemoteControl *remote;
 
     std::map<QString, QVariant> devList;
-
-    /* plugins */
-    std::vector<PluginInterface *> pluginList;
 
     // dummy widget to enforce linking to QtSvg
     QSvgWidget      *qsvg_dummy;
@@ -214,7 +207,6 @@ private slots:
     int  on_actionIoConfig_triggered();
     void on_actionLoadSettings_triggered();
     void on_actionSaveSettings_triggered();
-    void on_actionLoadPlugin_triggered();
     void on_actionSaveWaterfall_triggered();
     void on_actionIqTool_triggered();
     void on_actionFullScreen_triggered(bool checked);
@@ -237,6 +229,9 @@ private slots:
     void iqFftTimeout();
     void audioFftTimeout();
     void rdsTimeout();
+
+    /* Sniffer */
+    void setSnifferState(bool state);
 };
 
 #endif // MAINWINDOW_H

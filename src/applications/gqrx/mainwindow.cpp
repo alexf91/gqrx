@@ -257,6 +257,8 @@ MainWindow::MainWindow(const QString cfgfile, bool edit_conf, QWidget *parent) :
     connect(uiDockFft, SIGNAL(peakDetectionToggled(bool)), this, SLOT(setPeakDetection(bool)));
     connect(uiDockRDS, SIGNAL(rdsDecoderToggled(bool)), this, SLOT(setRdsDecoder(bool)));
 
+    connect(uiDockPlugins, SIGNAL(pluginsRunning(bool)), this, SLOT(setSnifferState(bool)));
+
     // Bookmarks
     connect(uiDockBookmarks, SIGNAL(newBookmarkActivated(qint64, QString, int)), this, SLOT(onBookmarkActivated(qint64, QString, int)));
     connect(uiDockBookmarks->actionAddBookmark, SIGNAL(triggered()), this, SLOT(on_actionAddBookmark_triggered()));
@@ -378,6 +380,7 @@ MainWindow::~MainWindow()
     delete uiDockFft;
     delete uiDockInputCtl;
     delete uiDockRDS;
+    delete uiDockPlugins;
     delete rx;
     delete remote;
     delete [] d_fftData;
@@ -710,46 +713,6 @@ void MainWindow::storeSession()
                 m_settings->setValue("receiver/filter_high_cut", fhi);
             }
         }
-    }
-}
-
-/**
- * Load and register a plugin
- */
-bool MainWindow::loadPlugin(const QString pluginfile)
-{
-    QPluginLoader loader(pluginfile, this);
-    if (auto instance = loader.instance()) {
-        if (auto plugin = qobject_cast<PluginInterface*>(instance)) {
-
-            // Start the sniffer when the first plugin is loaded
-            if (pluginList.size() == 0) {
-                if (rx->start_sniffer(22050, SNIFFER_BUFFER_SIZE) == receiver::STATUS_OK) {
-                    dec_timer->start(100);
-                }
-            }
-            plugin->printMessage("Plugin loaded");
-            pluginList.push_back(plugin);
-
-            // Show the plugin if it's a widget
-            if (auto widget = qobject_cast<QWidget*>(instance)) {
-                qDebug() << "Plugin is a widget";
-                widget->show();
-            }
-            else {
-                qDebug() << "Plugin is not a widget";
-            }
-
-            return true;
-        }
-        else {
-            qDebug() << "Unrecognized plugin type";
-            return false;
-        }
-    }
-    else {
-        qDebug() << loader.errorString();
-        return false;
     }
 }
 
@@ -1866,31 +1829,6 @@ void MainWindow::on_actionLoadSettings_triggered()
         m_last_dir = fi.absolutePath();
 }
 
-/** Load plugin activated by user. */
-void MainWindow::on_actionLoadPlugin_triggered()
-{
-    /* TODO: Create seperate settings variable for plugin directory */
-    QString pluginfile;
-    pluginfile = QFileDialog::getOpenFileName(this, tr("Load plugin"),
-                                              m_last_dir.isEmpty() ? m_cfg_dir : m_last_dir,
-                                              tr("Plugin (*.so)"));
-
-    qDebug() << "Plugin to open:" << pluginfile;
-
-    if (pluginfile.isEmpty())
-        return;
-
-    if (!pluginfile.endsWith(".so", Qt::CaseSensitive))
-        pluginfile.append(".so");
-
-    loadPlugin(pluginfile);
-
-    // store last dir
-    QFileInfo fi(pluginfile);
-    if (m_cfg_dir != fi.absolutePath())
-        m_last_dir = fi.absolutePath();
-}
-
 /** Save configuration activated by user. */
 void MainWindow::on_actionSaveSettings_triggered()
 {
@@ -2030,8 +1968,7 @@ void MainWindow::on_actionRemoteConfig_triggered()
 }
 
 /**
- * Cyclic processing for acquiring samples from receiver and processing them
- * with data decoders (see dec_* objects)
+ * Acquire samples and pass them on the the plugin manager
  */
 void MainWindow::decoderTimeout()
 {
@@ -2040,9 +1977,7 @@ void MainWindow::decoderTimeout()
 
     rx->get_sniffer_data(&buffer[0], num);
 
-    for (auto &plugin : pluginList) {
-        plugin->processSamples(&buffer[0], num);
-    }
+    uiDockPlugins->processSamples(buffer, num);
 }
 
 void MainWindow::setRdsDecoder(bool checked)
@@ -2307,5 +2242,21 @@ void MainWindow::on_actionAddBookmark_triggered()
         uiDockBookmarks->updateTags();
         uiDockBookmarks->updateBookmarks();
         ui->plotter->updateOverlay();
+    }
+}
+
+
+void MainWindow::setSnifferState(bool state)
+{
+    qDebug() << "Sniffer state: " << state;
+    /* Deactivate */
+    if (rx->is_snifffer_active() and not state) {
+        dec_timer->stop();
+        rx->stop_sniffer();
+    }
+    /* Activate */
+    else if (not rx->is_snifffer_active() and state) {
+        dec_timer->start(100);
+        rx->start_sniffer(22050, SNIFFER_BUFFER_SIZE);
     }
 }
