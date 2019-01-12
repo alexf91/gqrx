@@ -234,6 +234,12 @@ MainWindow::MainWindow(const QString cfgfile, bool edit_conf, QWidget *parent) :
     connect(uiDockFft, SIGNAL(resetFftZoom()), ui->plotter, SLOT(resetHorizontalZoom()));
     connect(uiDockFft, SIGNAL(gotoFftCenter()), ui->plotter, SLOT(moveToCenterFreq()));
     connect(uiDockFft, SIGNAL(gotoDemodFreq()), ui->plotter, SLOT(moveToDemodFreq()));
+    connect(uiDockFft, SIGNAL(resetFftZoom()), ui->plotter_aux_1, SLOT(resetHorizontalZoom()));
+    connect(uiDockFft, SIGNAL(gotoFftCenter()), ui->plotter_aux_1, SLOT(moveToCenterFreq()));
+    connect(uiDockFft, SIGNAL(gotoDemodFreq()), ui->plotter_aux_1, SLOT(moveToDemodFreq()));
+    connect(uiDockFft, SIGNAL(resetFftZoom()), ui->plotter_aux_2, SLOT(resetHorizontalZoom()));
+    connect(uiDockFft, SIGNAL(gotoFftCenter()), ui->plotter_aux_2, SLOT(moveToCenterFreq()));
+    connect(uiDockFft, SIGNAL(gotoDemodFreq()), ui->plotter_aux_2, SLOT(moveToDemodFreq()));
 
     connect(uiDockFft, SIGNAL(pandapterRangeChanged(float,float)),
             ui->plotter, SLOT(setPandapterRange(float,float)));
@@ -243,6 +249,25 @@ MainWindow::MainWindow(const QString cfgfile, bool edit_conf, QWidget *parent) :
             uiDockFft, SLOT(setPandapterRange(float,float)));
     connect(ui->plotter, SIGNAL(newZoomLevel(float)),
             uiDockFft, SLOT(setZoomLevel(float)));
+
+    connect(uiDockFft, SIGNAL(pandapterRangeChanged(float,float)),
+            ui->plotter_aux_1, SLOT(setPandapterRange(float,float)));
+    connect(uiDockFft, SIGNAL(waterfallRangeChanged(float,float)),
+            ui->plotter_aux_1, SLOT(setWaterfallRange(float,float)));
+    connect(ui->plotter_aux_1, SIGNAL(pandapterRangeChanged(float,float)),
+            uiDockFft, SLOT(setPandapterRange(float,float)));
+    connect(ui->plotter_aux_1, SIGNAL(newZoomLevel(float)),
+            uiDockFft, SLOT(setZoomLevel(float)));
+
+    connect(uiDockFft, SIGNAL(pandapterRangeChanged(float,float)),
+            ui->plotter_aux_2, SLOT(setPandapterRange(float,float)));
+    connect(uiDockFft, SIGNAL(waterfallRangeChanged(float,float)),
+            ui->plotter_aux_2, SLOT(setWaterfallRange(float,float)));
+    connect(ui->plotter_aux_2, SIGNAL(pandapterRangeChanged(float,float)),
+            uiDockFft, SLOT(setPandapterRange(float,float)));
+    connect(ui->plotter_aux_2, SIGNAL(newZoomLevel(float)),
+            uiDockFft, SLOT(setZoomLevel(float)));
+
 
     connect(uiDockFft, SIGNAL(fftColorChanged(QColor)), this, SLOT(setFftColor(QColor)));
     connect(uiDockFft, SIGNAL(fftFillToggled(bool)), this, SLOT(setFftFill(bool)));
@@ -323,6 +348,12 @@ MainWindow::MainWindow(const QString cfgfile, bool edit_conf, QWidget *parent) :
     }
 
     qsvg_dummy = new QSvgWidget();
+
+    ui->plotter_aux_1->setFilterBoxEnabled(false);
+    ui->plotter_aux_1->setCenterLineEnabled(false);
+
+    ui->plotter_aux_2->setFilterBoxEnabled(false);
+    ui->plotter_aux_2->setCenterLineEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -555,6 +586,10 @@ bool MainWindow::loadConfig(const QString cfgfile, bool check_crash,
         uiDockFft->setSampleRate(actual_rate);
         ui->plotter->setSampleRate(actual_rate);
         ui->plotter->setSpanFreq((quint32)actual_rate);
+        ui->plotter_aux_1->setSampleRate(actual_rate);
+        ui->plotter_aux_1->setSpanFreq((quint32)actual_rate);
+        ui->plotter_aux_2->setSampleRate(actual_rate);
+        ui->plotter_aux_2->setSpanFreq((quint32)actual_rate);
         remote->setBandwidth((qint64)actual_rate);
         iq_tool->setSampleRate((qint64)actual_rate);
     }
@@ -810,6 +845,8 @@ void MainWindow::setNewFrequency(qint64 rx_freq)
 
     // update widgets
     ui->plotter->setCenterFreq(center_freq);
+    ui->plotter_aux_1->setCenterFreq(center_freq);
+    ui->plotter_aux_2->setCenterFreq(center_freq);
     uiDockRxOpt->setHwFreq(d_hw_freq);
     ui->freqCtrl->setFrequency(rx_freq);
     uiDockBookmarks->setNewFrequency(rx_freq);
@@ -831,6 +868,8 @@ void MainWindow::setLnbLo(double freq_mhz)
     updateFrequencyRange();
     ui->freqCtrl->setFrequency(d_lnb_lo + rf_freq);
     ui->plotter->setCenterFreq(d_lnb_lo + d_hw_freq);
+    ui->plotter_aux_1->setCenterFreq(d_lnb_lo + d_hw_freq);
+    ui->plotter_aux_2->setCenterFreq(d_lnb_lo + d_hw_freq);
 
     // update LNB LO in settings
     if (freq_mhz == 0.f)
@@ -1288,6 +1327,8 @@ void MainWindow::iqFftTimeout()
     }
 
     ui->plotter->setNewFftData(d_iirFftData, d_realFftData, fftsize);
+    ui->plotter_aux_1->setNewFftData(d_iirFftData, d_realFftData, fftsize);
+    ui->plotter_aux_2->setNewFftData(d_iirFftData, d_realFftData, fftsize);
 }
 
 /** Audio FFT plot timeout. */
@@ -1510,6 +1551,10 @@ void MainWindow::startIqPlayback(const QString filename, float samprate)
     uiDockRxOpt->setFilterOffsetRange((qint64)(actual_rate));
     ui->plotter->setSampleRate(actual_rate);
     ui->plotter->setSpanFreq((quint32)actual_rate);
+    ui->plotter_aux_1->setSampleRate(actual_rate);
+    ui->plotter_aux_1->setSpanFreq((quint32)actual_rate);
+    ui->plotter_aux_2->setSampleRate(actual_rate);
+    ui->plotter_aux_2->setSpanFreq((quint32)actual_rate);
     remote->setBandwidth(actual_rate);
 
     // FIXME: would be nice with good/bad status
@@ -1549,6 +1594,10 @@ void MainWindow::stopIqPlayback()
         uiDockRxOpt->setFilterOffsetRange((qint64)(actual_rate));
         ui->plotter->setSampleRate(actual_rate);
         ui->plotter->setSpanFreq((quint32)actual_rate);
+        ui->plotter_aux_1->setSampleRate(actual_rate);
+        ui->plotter_aux_1->setSpanFreq((quint32)actual_rate);
+        ui->plotter_aux_2->setSampleRate(actual_rate);
+        ui->plotter_aux_2->setSpanFreq((quint32)actual_rate);
         remote->setBandwidth(sr);
 
         // not needed as long as we are not recording in iq_tool
@@ -1591,14 +1640,21 @@ void MainWindow::setIqFftRate(int fps)
     {
         interval = 36e7; // 100 hours
         ui->plotter->setRunningState(false);
+        ui->plotter_aux_1->setRunningState(false);
+        ui->plotter_aux_2->setRunningState(false);
     }
     else
     {
         interval = 1000 / fps;
 
         ui->plotter->setFftRate(fps);
-        if (iq_fft_timer->isActive())
+        ui->plotter_aux_1->setFftRate(fps);
+        ui->plotter_aux_2->setFftRate(fps);
+        if (iq_fft_timer->isActive()) {
             ui->plotter->setRunningState(true);
+            ui->plotter_aux_1->setRunningState(true);
+            ui->plotter_aux_2->setRunningState(true);
+        }
     }
 
     if (interval > 9 && iq_fft_timer->isActive())
@@ -1616,6 +1672,12 @@ void MainWindow::setWfTimeSpan(quint64 span_ms)
     // set new time span, then send back new resolution to be shown by GUI label
     ui->plotter->setWaterfallSpan(span_ms);
     uiDockFft->setWfResolution(ui->plotter->getWfTimeRes());
+
+    ui->plotter_aux_1->setWaterfallSpan(span_ms);
+    uiDockFft->setWfResolution(ui->plotter_aux_1->getWfTimeRes());
+
+    ui->plotter_aux_2->setWaterfallSpan(span_ms);
+    uiDockFft->setWfResolution(ui->plotter_aux_2->getWfTimeRes());
 }
 
 /**
@@ -1624,8 +1686,11 @@ void MainWindow::setWfTimeSpan(quint64 span_ms)
  */
 void MainWindow::setIqFftSplit(int pct_wf)
 {
-    if ((pct_wf >= 0) && (pct_wf <= 100))
+    if ((pct_wf >= 0) && (pct_wf <= 100)) {
         ui->plotter->setPercent2DScreen(pct_wf);
+        ui->plotter_aux_1->setPercent2DScreen(pct_wf);
+        ui->plotter_aux_2->setPercent2DScreen(pct_wf);
+    }
 }
 
 void MainWindow::setIqFftAvg(float avg)
@@ -1650,6 +1715,8 @@ void MainWindow::setAudioFftRate(int fps)
 void MainWindow::setFftColor(const QColor color)
 {
     ui->plotter->setFftPlotColor(color);
+    ui->plotter_aux_1->setFftPlotColor(color);
+    ui->plotter_aux_2->setFftPlotColor(color);
     uiDockAudio->setFftColor(color);
 }
 
@@ -1657,17 +1724,23 @@ void MainWindow::setFftColor(const QColor color)
 void MainWindow::setFftFill(bool enable)
 {
     ui->plotter->setFftFill(enable);
+    ui->plotter_aux_1->setFftFill(enable);
+    ui->plotter_aux_2->setFftFill(enable);
     uiDockAudio->setFftFill(enable);
 }
 
 void MainWindow::setFftPeakHold(bool enable)
 {
     ui->plotter->setPeakHold(enable);
+    ui->plotter_aux_1->setPeakHold(enable);
+    ui->plotter_aux_2->setPeakHold(enable);
 }
 
 void MainWindow::setPeakDetection(bool enabled)
 {
     ui->plotter->setPeakDetection(enabled ,2);
+    ui->plotter_aux_1->setPeakDetection(enabled ,2);
+    ui->plotter_aux_2->setPeakDetection(enabled ,2);
 }
 
 /**
@@ -1712,11 +1785,15 @@ void MainWindow::on_actionDSP_triggered(bool checked)
         {
             iq_fft_timer->start(1000/uiDockFft->fftRate());
             ui->plotter->setRunningState(true);
+            ui->plotter_aux_1->setRunningState(true);
+            ui->plotter_aux_2->setRunningState(true);
         }
         else
         {
             iq_fft_timer->start(36e7); // 100 hours
             ui->plotter->setRunningState(false);
+            ui->plotter_aux_1->setRunningState(false);
+            ui->plotter_aux_2->setRunningState(false);
         }
 
         audio_fft_timer->start(40);
@@ -1744,6 +1821,8 @@ void MainWindow::on_actionDSP_triggered(bool checked)
         ui->actionDSP->setText(tr("Start DSP"));
 
         ui->plotter->setRunningState(false);
+        ui->plotter_aux_1->setRunningState(false);
+        ui->plotter_aux_2->setRunningState(false);
     }
 }
 
