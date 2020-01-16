@@ -1152,7 +1152,7 @@ bool CPlotter::accumulateWaterfallData()
  */
 void CPlotter::setNewFftData(float *fftData, int size)
 {
-    setNewFttData(fftData, fftData, size);
+    setNewFftData(fftData, fftData, size);
 }
 
 /**
