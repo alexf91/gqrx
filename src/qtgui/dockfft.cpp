@@ -32,6 +32,7 @@
 #define DEFAULT_FFT_RATE        25
 #define DEFAULT_FFT_SIZE        8192
 #define DEFAULT_FFT_WINDOW      1       // Hann
+#define DEFAULT_WATERFALL_SPAN  0       // Auto
 #define DEFAULT_FFT_SPLIT       35
 #define DEFAULT_FFT_AVG         75
 #define DEFAULT_COLORMAP        "gqrx"
@@ -80,6 +81,9 @@ DockFft::DockFft(QWidget *parent) :
     ui->cmapComboBox->addItem(tr("Gqrx"), "gqrx");
     ui->cmapComboBox->addItem(tr("Google Turbo"), "turbo");
     ui->cmapComboBox->addItem(tr("Plasma"), "plasma");
+    ui->cmapComboBox->addItem(tr("White Hot Compressed"), "whitehotcompressed");
+    ui->cmapComboBox->addItem(tr("White Hot"), "whitehot");
+    ui->cmapComboBox->addItem(tr("Black Hot"), "blackhot");
 }
 DockFft::~DockFft()
 {
@@ -212,6 +216,12 @@ void DockFft::saveSettings(QSettings *settings)
     else
         settings->remove("fft_window");
 
+    intval = ui->wfSpanComboBox->currentIndex();
+    if (intval != DEFAULT_WATERFALL_SPAN)
+        settings->setValue("waterfall_span", intval);
+    else
+        settings->remove("waterfall_span");
+
     if (ui->fftAvgSlider->value() != DEFAULT_FFT_AVG)
         settings->setValue("averaging", ui->fftAvgSlider->value());
     else
@@ -297,6 +307,10 @@ void DockFft::readSettings(QSettings *settings)
     intval = settings->value("fft_window", DEFAULT_FFT_WINDOW).toInt(&conv_ok);
     if (conv_ok)
         ui->fftWinComboBox->setCurrentIndex(intval);
+
+    intval = settings->value("waterfall_span", DEFAULT_WATERFALL_SPAN).toInt(&conv_ok);
+    if (conv_ok)
+        ui->wfSpanComboBox->setCurrentIndex(intval);
 
     intval = settings->value("averaging", DEFAULT_FFT_AVG).toInt(&conv_ok);
     if (conv_ok)
@@ -537,16 +551,16 @@ void DockFft::on_cmapComboBox_currentIndexChanged(int index)
 /** Update RBW and FFT overlab labels */
 void DockFft::updateInfoLabels(void)
 {
-    float   rate;
+    float   interval_ms;
+    float   interval_samples;
     float   size;
     float   rbw;
     float   ovr;
-    float   sps;
+    int     rate;
 
     if (m_sample_rate == 0.f)
         return;
 
-    rate = fftRate();
     size = fftSize();
 
     rbw = m_sample_rate / size;
@@ -557,10 +571,17 @@ void DockFft::updateInfoLabels(void)
     else
         ui->fftRbwLabel->setText(QString("RBW: %1 MHz").arg(1.e-6 * rbw, 0, 'f', 1));
 
-    sps = size * rate;
-    if (sps <= m_sample_rate)
+    rate = fftRate();
+    if (rate == 0)
         ovr = 0;
     else
-        ovr = 100 * (sps / m_sample_rate - 1.f);
+    {
+        interval_ms = 1000 / rate;
+        interval_samples = m_sample_rate * (interval_ms / 1000.0);
+        if (interval_samples >= size)
+            ovr = 0;
+        else
+            ovr = 100 * (1.f - interval_samples / size);
+    }
     ui->fftOvrLabel->setText(QString("Overlap: %1%").arg(ovr, 0, 'f', 0));
 }
