@@ -1116,18 +1116,14 @@ receiver::status receiver::stop_audio_playback()
 /** Start UDP streaming of audio. */
 receiver::status receiver::start_udp_streaming(const std::string host, int port, bool stereo)
 {
-    stop();
     audio_udp_sink->start_streaming(host, port, stereo);
-    start();
     return STATUS_OK;
 }
 
 /** Stop UDP streaming of audio. */
 receiver::status receiver::stop_udp_streaming()
 {
-    stop();
     audio_udp_sink->stop_streaming();
-    start();
     return STATUS_OK;
 }
 
@@ -1330,6 +1326,7 @@ void receiver::connect_all(rx_chain type)
         tb->connect(rot, 0, rx, 0);
         tb->connect(rx, 0, audio_fft, 0);
         tb->connect(rx, 0, audio_udp_sink, 0);
+        tb->connect(rx, 1, audio_udp_sink, 1);
         tb->connect(rx, 0, audio_gain0, 0);
         tb->connect(rx, 1, audio_gain1, 0);
         tb->connect(audio_gain0, 0, audio_snk, 0);
