@@ -1,11 +1,27 @@
+
     2.12.2: In progress...
 
-     FIXED: FM de-emphasis causing audio to be 20 dB quieter than should be.
+       NEW: Stereo option for UDP streaming.
+       NEW: Script to generate AppImage.
+     FIXED: FM de-emphasis causing audio to be 20 dB quieter than it should be.
+     FIXED: FM de-emphasis applied incorrectly in WFM stereo receiver.
      FIXED: Update waterfall time resolution when FFT settings are changed.
      FIXED: Update waterfall time resolution when window is resized.
      FIXED: Restore waterfall time span between sessions.
      FIXED: FFT buffer overlap calculation.
-  IMPROVED: Software tuning.
+     FIXED: Crash when launching without device connected.
+     FIXED: Crash when setting invalid RF gains.
+     FIXED: Audio panadapter / waterfall slider direction.
+     FIXED: Clear FFT averages when changing FFT size.
+     FIXED: Crash when source block doesn't support IQ balancing.
+     FIXED: Bookmark labels in FFT draw over each other.
+  IMPROVED: DSP and FFT performance.
+  IMPROVED: Panadapter & waterfall performance.
+  IMPROVED: Smooth panadapter & waterfall redrawing.
+  IMPROVED: Better default values for various settings.
+  IMPROVED: Audio waterfall colormap matches I/Q waterfall.
+  IMPROVED: Use all available display space for panadapter & waterfall.
+  IMPROVED: Updated RDS decoder.
 
 
     2.12.1: Released January 27, 2020
@@ -275,7 +291,7 @@
      FIXED: Frequency control widget with recent Qt was broken.
      FIXED: Bug that caused audio FFT data to be leaked into the I/Q FFT.
      FIXED: Audio recording & playback.
-     FIXED: Proper handling of frequencies above 2147483647 Hz. 
+     FIXED: Proper handling of frequencies above 2147483647 Hz.
   IMPROVED: Y-axis panning (click-and-drag).
   IMPROVED: Rescale waterfall when resizing the main window.
   IMPROVED: gr-audio support on Linux.
@@ -322,11 +338,10 @@
 
 
      2.0.0  Released on July 7, 2012
-       
+
        First stable release of C++ version with Funcube Dongle support.
 
 
      1.x
 
        Initial experiments using Python and gr-qtgui.
-
