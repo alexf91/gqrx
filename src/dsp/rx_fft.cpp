@@ -83,7 +83,7 @@ int rx_fft_c::work(int noutput_items,
     (void) output_items;
 
     /* just throw new samples into the buffer */
-    boost::mutex::scoped_lock lock(d_mutex);
+    std::lock_guard<std::mutex> lock(d_mutex);
     for (i = 0; i < noutput_items; i++)
     {
         d_cbuf.push_back(in[i]);
@@ -99,7 +99,7 @@ int rx_fft_c::work(int noutput_items,
  */
 void rx_fft_c::get_fft_data(std::complex<float>* fftPoints, unsigned int &fftSize)
 {
-    boost::mutex::scoped_lock lock(d_mutex);
+    std::lock_guard<std::mutex> lock(d_mutex);
 
     if (d_cbuf.size() < d_fftsize)
     {
@@ -128,7 +128,7 @@ void rx_fft_c::get_fft_data(std::complex<float>* fftPoints, unsigned int &fftSiz
  *  \param size The size of data_in.
  *
  * Note that this function does not lock the mutex since the caller, get_fft_data()
- * has alrady locked it.
+ * has already locked it.
  */
 void rx_fft_c::do_fft(unsigned int size)
 {
@@ -151,7 +151,7 @@ void rx_fft_c::do_fft(unsigned int size)
 /*! \brief Update circular buffer and FFT object. */
 void rx_fft_c::set_params()
 {
-    boost::mutex::scoped_lock lock(d_mutex);
+    std::lock_guard<std::mutex> lock(d_mutex);
 
     /* clear and resize circular buffer */
     d_cbuf.clear();
@@ -274,7 +274,7 @@ int rx_fft_f::work(int noutput_items,
     (void) output_items;
 
     /* just throw new samples into the buffer */
-    boost::mutex::scoped_lock lock(d_mutex);
+    std::lock_guard<std::mutex> lock(d_mutex);
     for (i = 0; i < noutput_items; i++)
     {
         d_cbuf.push_back(in[i]);
@@ -289,7 +289,7 @@ int rx_fft_f::work(int noutput_items,
  */
 void rx_fft_f::get_fft_data(std::complex<float>* fftPoints, unsigned int &fftSize)
 {
-    boost::mutex::scoped_lock lock(d_mutex);
+    std::lock_guard<std::mutex> lock(d_mutex);
 
     if (d_cbuf.size() < d_fftsize)
     {
@@ -318,7 +318,7 @@ void rx_fft_f::get_fft_data(std::complex<float>* fftPoints, unsigned int &fftSiz
  *  \param size The size of data_in.
  *
  * Note that this function does not lock the mutex since the caller, get_fft_data()
- * has alrady locked it.
+ * has already locked it.
  */
 void rx_fft_f::do_fft(unsigned int size)
 {
@@ -347,7 +347,7 @@ void rx_fft_f::set_fft_size(unsigned int fftsize)
 {
     if (fftsize != d_fftsize)
     {
-        boost::mutex::scoped_lock lock(d_mutex);
+        std::lock_guard<std::mutex> lock(d_mutex);
 
         d_fftsize = fftsize;
 

@@ -29,7 +29,6 @@
 #include <QtGlobal>
 #include <QVariant>
 
-#include <boost/foreach.hpp>
 #include <osmosdr/device.h>
 #include <osmosdr/source.h>
 #include <osmosdr/ranges.h>
@@ -239,7 +238,7 @@ void CIoConfig::getDeviceList(std::map<QString, QVariant> &devList)
     osmosdr::devices_t devs = osmosdr::device::find();
 
     qDebug() << __FUNCTION__ << ": Available input devices:";
-    BOOST_FOREACH(osmosdr::device_t &dev, devs)
+    for (auto &dev : devs)
     {
         if (dev.count("label"))
         {
@@ -497,7 +496,20 @@ void CIoConfig::updateInputSampleRates(int rate)
     }
     else if (ui->inDevEdit->text().contains("airspyhf"))
     {
+        ui->inSrCombo->addItem("192000");
+        ui->inSrCombo->addItem("256000");
+        ui->inSrCombo->addItem("384000");
+        ui->inSrCombo->addItem("456000");
         ui->inSrCombo->addItem("768000");
+        ui->inSrCombo->addItem("912000");
+
+        if (rate > 0)
+        {
+            ui->inSrCombo->insertItem(0, QString("%1").arg(rate));
+            ui->inSrCombo->setCurrentIndex(0);
+        }
+        else
+            ui->inSrCombo->setCurrentIndex(4); // select 768 kHz
     }
     // NB: must list airspyhf first
     else if (ui->inDevEdit->text().contains("airspy"))
@@ -681,7 +693,7 @@ void CIoConfig::inputDeviceSelected(int index)
  * @param text THe new device string
  *
  * This slot is activated when the device string in the text edit box has changed
- * either by the user or programatically. We use this to enable/disable the OK
+ * either by the user or programmatically. We use this to enable/disable the OK
  * button - we allo OK only if there is some text in the text entry.
  */
 void CIoConfig::inputDevstrChanged(const QString &text)

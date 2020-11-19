@@ -53,7 +53,7 @@
 #define TARGET_QUAD_RATE 1e6
 
 /**
- * @brief Public contructor.
+ * @brief Public constructor.
  * @param input_device Input device specifier.
  * @param audio_device Audio output device specifier,
  *                     e.g. hw:0 when using ALSA or Portaudio.
@@ -311,7 +311,7 @@ std::vector<std::string> receiver::get_antennas(void) const
     return src->get_antennas();
 }
 
-/** Select antenna conenctor. */
+/** Select antenna connector. */
 void receiver::set_antenna(const std::string &antenna)
 {
     if (!antenna.empty())
@@ -337,7 +337,14 @@ double receiver::set_input_rate(double rate)
             * std::numeric_limits<double>::epsilon());
 
     tb->lock();
-    d_input_rate = src->set_sample_rate(rate);
+    try
+    {
+        d_input_rate = src->set_sample_rate(rate);
+    }
+    catch (std::runtime_error &e)
+    {
+        d_input_rate = 0;
+    }
 
     if (d_input_rate == 0)
     {
@@ -598,7 +605,7 @@ std::vector<std::string> receiver::get_gain_names()
  * @param[out] stop  Upper limit for this gain setting.
  * @param[out] step  The resolution for this gain setting.
  *
- * This function retunrs the range for the requested gain stage.
+ * This function returns the range for the requested gain stage.
  */
 receiver::status receiver::get_gain_range(std::string &name, double *start,
                                           double *stop, double *step) const
@@ -995,9 +1002,15 @@ receiver::status receiver::start_audio_recording(const std::string filename)
 
     // if this fails, we don't want to go and crash now, do we
     try {
+#if GNURADIO_VERSION < 0x030900
         wav_sink = gr::blocks::wavfile_sink::make(filename.c_str(), 2,
                                                   (unsigned int) d_audio_rate,
                                                   16);
+#else
+        wav_sink = gr::blocks::wavfile_sink::make(filename.c_str(), 2,
+                                                  (unsigned int) d_audio_rate,
+                                                  gr::blocks::FORMAT_WAV, gr::blocks::FORMAT_PCM_16);
+#endif
     }
     catch (std::runtime_error &e) {
         std::cout << "Error opening " << filename << ": " << e.what() << std::endl;

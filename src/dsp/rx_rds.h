@@ -23,6 +23,7 @@
 #ifndef RX_RDS_H
 #define RX_RDS_H
 
+#include <mutex>
 #include <gnuradio/hier_block2.h>
 
 #if GNURADIO_VERSION < 0x030800
@@ -50,8 +51,13 @@
 class rx_rds;
 class rx_rds_store;
 
+#if GNURADIO_VERSION < 0x030900
 typedef boost::shared_ptr<rx_rds> rx_rds_sptr;
 typedef boost::shared_ptr<rx_rds_store> rx_rds_store_sptr;
+#else
+typedef std::shared_ptr<rx_rds> rx_rds_sptr;
+typedef std::shared_ptr<rx_rds_store> rx_rds_store_sptr;
+#endif
 
 
 rx_rds_sptr make_rx_rds(double sample_rate);
@@ -69,7 +75,7 @@ public:
 private:
     void store(pmt::pmt_t msg);
 
-    boost::mutex d_mutex;
+    std::mutex d_mutex;
     boost::circular_buffer<pmt::pmt_t> d_messages;
 
 };

@@ -1,8 +1,38 @@
 
-    2.12.2: In progress...
+    2.13.4: In progress...
+
+       NEW: Added man page for use by distributions.
+  IMPROVED: Removed Boost.Format dependency.
+
+
+    2.13.3: Released November 1, 2020
+
+     FIXED: Crash when waterfall height is set to 100%.
+  IMPROVED: Removed Boost.Program_options dependency.
+
+
+    2.13.2: Released October 24, 2020
+
+       NEW: Preliminary support for GNU Radio 3.9.
+       NEW: Print UDP configuration.
+       NEW: Viridis color map.
+     FIXED: Loss of precision in the plotter's frequency axis.
+     FIXED: Usability on smaller screen sizes.
+
+
+    2.13.1: Released October 17, 2020
+
+     FIXED: Crash when invalid sample rate is specified.
+     FIXED: Decrease minimum size of FFT Settings panel.
+     FIXED: Typos.
+  IMPROVED: More Airspy HF+ sample rates added.
+
+
+      2.13: Released October 16, 2020
 
        NEW: Stereo option for UDP streaming.
        NEW: Script to generate AppImage.
+       NEW: Allow scroll wheel direction to be inverted.
      FIXED: FM de-emphasis causing audio to be 20 dB quieter than it should be.
      FIXED: FM de-emphasis applied incorrectly in WFM stereo receiver.
      FIXED: Update waterfall time resolution when FFT settings are changed.
@@ -22,6 +52,7 @@
   IMPROVED: Audio waterfall colormap matches I/Q waterfall.
   IMPROVED: Use all available display space for panadapter & waterfall.
   IMPROVED: Updated RDS decoder.
+  IMPROVED: More Airspy HF+ sample rates added.
 
 
     2.12.1: Released January 27, 2020
@@ -261,12 +292,12 @@
      FIXED: Correctly apply initial LNB LO frequency.
      FIXED: Audio output device selection on Mac OS X.
      FIXED: Properly store settings when using Save As function.
-     FIXED: Crash when recording audio whith no rec directory set.
+     FIXED: Crash when recording audio with no rec directory set.
      FIXED: Only allow audio playback while DSP is running.
      FIXED: Ensure DSP is stopped when we exit.
      FIXED: Freeze when switching modes after audio recording.
      FIXED: Toggling "ignore limits" changes frequency.
-     FIXED: Include gqrx.dekstop file.
+     FIXED: Include gqrx.desktop file.
      FIXED: Rename scope.svg to gqrx.svg to avoid confusion.
   IMPROVED: Gqrx can fit on small screens (900x600 pixels).
   IMPROVED: Better color gradient for the waterfall.
@@ -334,7 +365,7 @@
        NEW: Pan & zoom on the pandapter axes.
        NEW: Allow changing FFT size.
      FIXED: Mac OS X compatibility.
-  IMPROVED: Various improvements to the user iterface.
+  IMPROVED: Various improvements to the user interface.
 
 
      2.0.0  Released on July 7, 2012

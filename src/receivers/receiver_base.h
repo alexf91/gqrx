@@ -28,7 +28,11 @@
 
 class receiver_base_cf;
 
+#if GNURADIO_VERSION < 0x030900
 typedef boost::shared_ptr<receiver_base_cf> receiver_base_cf_sptr;
+#else
+typedef std::shared_ptr<receiver_base_cf> receiver_base_cf_sptr;
+#endif
 
 
 /*! \brief Base class for receivers that output audio.
@@ -42,8 +46,8 @@ class receiver_base_cf : public gr::hier_block2
 {
 
 public:
-    /*! \brief Public contructor.
-     *  \param src_name Descriptive name used in the contructor of gr::hier_block2
+    /*! \brief Public constructor.
+     *  \param src_name Descriptive name used in the constructor of gr::hier_block2
      */
     receiver_base_cf(std::string src_name);
     virtual ~receiver_base_cf();

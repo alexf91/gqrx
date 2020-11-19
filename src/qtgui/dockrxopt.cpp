@@ -211,7 +211,7 @@ unsigned int DockRxOpt::filterIdxFromLoHi(int lo, int hi) const
  * @param lo Low cutoff frequency in Hz
  * @param hi High cutoff frequency in Hz.
  *
- * This function will automatically select te "User" preset in the
+ * This function will automatically select the "User" preset in the
  * combo box.
  */
 void DockRxOpt::setFilterParam(int lo, int hi)
@@ -346,9 +346,6 @@ void DockRxOpt::readSettings(QSettings *settings)
     bool    conv_ok;
     int     int_val;
     double  dbl_val;
-
-    bool bool_val = settings->value("gui/fctl_reset_digits", true).toBool();
-    ui->filterFreq->setResetLowerDigits(bool_val);
 
     int_val = settings->value("receiver/cwoffset", 700).toInt(&conv_ok);
     if (conv_ok)
@@ -512,12 +509,22 @@ void DockRxOpt::setRxFreqRange(qint64 min_hz, qint64 max_hz)
     ui->freqSpinBox->blockSignals(false);
 }
 
+void DockRxOpt::setResetLowerDigits(bool enabled)
+{
+    ui->filterFreq->setResetLowerDigits(enabled);
+}
+
+void DockRxOpt::setInvertScrolling(bool enabled)
+{
+    ui->filterFreq->setInvertScrolling(enabled);
+}
+
 /**
  * @brief Channel filter offset has changed
  * @param freq The new filter offset in Hz
  *
  * This slot is activated when a new filter offset has been selected either
- * usig the mouse or using the keyboard.
+ * using the mouse or using the keyboard.
  */
 void DockRxOpt::on_filterFreq_newFrequency(qint64 freq)
 {

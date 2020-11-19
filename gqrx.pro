@@ -73,13 +73,13 @@ CONFIG(debug, debug|release) {
 
     # Define version string (see below for releases)
     VER = $$system(git describe --abbrev=8)
-    ##VER = 2.12
+    ##VER = 2.13.3
 
 } else {
     DEFINES += QT_NO_DEBUG
     DEFINES += QT_NO_DEBUG_OUTPUT
     VER = $$system(git describe --abbrev=1)
-    ##VER = 2.12
+    ##VER = 2.13.3
 
     # Release binaries with gr bundled
     # QMAKE_RPATH & co won't work with origin
@@ -295,12 +295,12 @@ greaterThan(GNURADIO_VERSION_MINOR, 7) {
 INCPATH += src/
 
 unix:!macx {
-    LIBS += -lboost_system$$BOOST_SUFFIX -lboost_program_options$$BOOST_SUFFIX
+    LIBS += -lboost_system$$BOOST_SUFFIX
     LIBS += -lrt  # need to include on some distros
 }
 
 macx {
-    LIBS += -lboost_system-mt -lboost_program_options-mt
+    LIBS += -lboost_system-mt
 }
 
 OTHER_FILES += \

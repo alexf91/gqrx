@@ -31,7 +31,7 @@
 #include <stdarg.h>
 #include "dsp/rx_rds.h"
 
-static const int MIN_IN = 1;  /* Mininum number of input streams. */
+static const int MIN_IN = 1;  /* Minimum number of input streams. */
 static const int MAX_IN = 1;  /* Maximum number of input streams. */
 static const int MIN_OUT = 1; /* Minimum number of output streams. */
 static const int MAX_OUT = 1; /* Maximum number of output streams. */
@@ -97,7 +97,7 @@ rx_rds_store::rx_rds_store() : gr::block ("rx_rds_store",
                                 gr::io_signature::make (0, 0, 0))
 {
         message_port_register_in(pmt::mp("store"));
-        set_msg_handler(pmt::mp("store"), boost::bind(&rx_rds_store::store, this, _1));
+        set_msg_handler(pmt::mp("store"), std::bind(&rx_rds_store::store, this, std::placeholders::_1));
         d_messages.set_capacity(100);
 }
 
@@ -108,14 +108,14 @@ rx_rds_store::~rx_rds_store ()
 
 void rx_rds_store::store(pmt::pmt_t msg)
 {
-    boost::mutex::scoped_lock lock(d_mutex);
+    std::lock_guard<std::mutex> lock(d_mutex);
     d_messages.push_back(msg);
 
 }
 
 void rx_rds_store::get_message(std::string &out, int &type)
 {
-    boost::mutex::scoped_lock lock(d_mutex);
+    std::lock_guard<std::mutex> lock(d_mutex);
 
     if (d_messages.size()>0) {
         pmt::pmt_t msg=d_messages.front();

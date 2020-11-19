@@ -32,7 +32,7 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
-     <number>6</number>
+     <number>5</number>
     </property>
     <property name="leftMargin">
      <number>5</number>
@@ -228,6 +228,13 @@
       </property>
       <property name="text">
        <string>Reset frequency controller digits</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="invertScrollingButton">
+      <property name="text">
+       <string>Invert scroll wheel direction</string>
       </property>
      </widget>
     </item>

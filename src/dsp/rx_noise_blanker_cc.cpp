@@ -47,11 +47,12 @@ rx_nb_cc::rx_nb_cc(double sample_rate, float thld1, float thld2)
       d_thld_nb2(thld2),
       d_avgmag_nb1(1.0),
       d_avgmag_nb2(1.0),
+      d_delay {0},
       d_delidx(2),
       d_sigidx(0),
       d_hangtime(0)
 {
-    memset(d_delay, 0, 8 * sizeof(gr_complex));
+
 }
 
 rx_nb_cc::~rx_nb_cc()
@@ -72,7 +73,7 @@ int rx_nb_cc::work(int noutput_items,
     gr_complex *out = (gr_complex *) output_items[0];
     int i;
 
-    boost::mutex::scoped_lock lock(d_mutex);
+    std::lock_guard<std::mutex> lock(d_mutex);
 
     // copy data into output buffer then perform the processing on that buffer
     for (i = 0; i < noutput_items; i++)

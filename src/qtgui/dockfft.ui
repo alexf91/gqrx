@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>302</width>
-    <height>534</height>
+    <width>368</width>
+    <height>444</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>280</width>
+    <width>327</width>
     <height>200</height>
    </size>
   </property>
@@ -71,8 +71,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>284</width>
-         <height>497</height>
+         <width>350</width>
+         <height>407</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -109,7 +109,7 @@
            <number>0</number>
           </property>
           <property name="spacing">
-           <number>6</number>
+           <number>5</number>
           </property>
           <item row="0" column="2" colspan="2">
            <widget class="QLabel" name="fftRbwLabel">

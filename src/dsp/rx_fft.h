@@ -23,11 +23,11 @@
 #ifndef RX_FFT_H
 #define RX_FFT_H
 
+#include <mutex>
 #include <gnuradio/sync_block.h>
 #include <gnuradio/fft/fft.h>
 #include <gnuradio/filter/firdes.h>       /* contains enum win_type */
 #include <gnuradio/gr_complex.h>
-#include <boost/thread/mutex.hpp>
 #include <boost/circular_buffer.hpp>
 #include <chrono>
 
@@ -37,8 +37,13 @@
 class rx_fft_c;
 class rx_fft_f;
 
+#if GNURADIO_VERSION < 0x030900
 typedef boost::shared_ptr<rx_fft_c> rx_fft_c_sptr;
 typedef boost::shared_ptr<rx_fft_f> rx_fft_f_sptr;
+#else
+typedef std::shared_ptr<rx_fft_c> rx_fft_c_sptr;
+typedef std::shared_ptr<rx_fft_f> rx_fft_f_sptr;
+#endif
 
 
 /*! \brief Return a shared_ptr to a new instance of rx_fft_c.
@@ -57,7 +62,7 @@ rx_fft_c_sptr make_rx_fft_c(unsigned int fftsize=4096, double quad_rate=0, int w
  *
  * This block is used to compute the FFT of the received spectrum.
  *
- * The samples are collected in a cicular buffer with size FFT_SIZE.
+ * The samples are collected in a circular buffer with size FFT_SIZE.
  * When the GUI asks for a new set of FFT data via get_fft_data() an FFT
  * will be performed on the data stored in the circular buffer - assuming
  * of course that the buffer contains at least fftsize samples.
@@ -92,7 +97,7 @@ private:
     double       d_quadrate;
     int          d_wintype;   /*! Current window type. */
 
-    boost::mutex d_mutex;  /*! Used to lock FFT output buffer. */
+    std::mutex   d_mutex;  /*! Used to lock FFT output buffer. */
 
     gr::fft::fft_complex    *d_fft;    /*! FFT object. */
     std::vector<float>  d_window; /*! FFT window taps. */
@@ -123,7 +128,7 @@ rx_fft_f_sptr make_rx_fft_f(unsigned int fftsize=1024, double audio_rate=48000, 
  * This block is used to compute the FFT of the audio spectrum or anything
  * else where real FFT is useful.
  *
- * The samples are collected in a cicular buffer with size FFT_SIZE.
+ * The samples are collected in a circular buffer with size FFT_SIZE.
  * When the GUI asks for a new set of FFT data using get_fft_data() an FFT
  * will be performed on the data stored in the circular buffer - assuming
  * that the buffer contains at least fftsize samples.
@@ -157,7 +162,7 @@ private:
     double       d_audiorate;
     int          d_wintype;   /*! Current window type. */
 
-    boost::mutex d_mutex;  /*! Used to lock FFT output buffer. */
+    std::mutex   d_mutex;  /*! Used to lock FFT output buffer. */
 
     gr::fft::fft_complex    *d_fft;    /*! FFT object. */
     std::vector<float>  d_window; /*! FFT window taps. */

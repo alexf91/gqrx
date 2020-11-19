@@ -23,14 +23,18 @@
 #ifndef SNIFFER_F_H
 #define SNIFFER_F_H
 
+#include <mutex>
 #include <gnuradio/sync_block.h>
-#include <boost/thread/mutex.hpp>
 #include <boost/circular_buffer.hpp>
 
 
 class sniffer_f;
 
+#if GNURADIO_VERSION < 0x030900
 typedef boost::shared_ptr<sniffer_f> sniffer_f_sptr;
+#else
+typedef std::shared_ptr<sniffer_f> sniffer_f_sptr;
+#endif
 
 
 /*! \brief Return a shared_ptr to a new instance of sniffer_f.
@@ -80,7 +84,7 @@ public:
 
 private:
 
-    boost::mutex d_mutex;                   /*! Used to prevent concurrent access to buffer. */
+    std::mutex d_mutex;                     /*! Used to prevent concurrent access to buffer. */
     boost::circular_buffer<float> d_buffer; /*! buffer to accumulate samples. */
     unsigned int d_minsamp;                 /*! smallest number of samples we want to return. */
 

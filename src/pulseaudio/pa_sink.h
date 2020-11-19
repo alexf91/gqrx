@@ -31,7 +31,11 @@ using namespace std;
 
 class pa_sink;
 
+#if GNURADIO_VERSION < 0x030900
 typedef boost::shared_ptr<pa_sink> pa_sink_sptr;
+#else
+typedef std::shared_ptr<pa_sink> pa_sink_sptr;
+#endif
 
 pa_sink_sptr make_pa_sink(const string device_name, int audio_rate,
                           const string app_name,
@@ -66,7 +70,7 @@ public:
 private:
     pa_simple *d_pasink;    /*! The pulseaudio object. */
     string d_stream_name;   /*! Descriptive name of the stream. */
-    string d_app_name;      /*! Descriptive name of the applcation. */
+    string d_app_name;      /*! Descriptive name of the application. */
     pa_sample_spec d_ss;    /*! pulseaudio sample specification. */
 };
 

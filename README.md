@@ -2,30 +2,28 @@ Gqrx
 ====
 
 Gqrx is an open source software defined radio (SDR) receiver implemented using
-[GNU Radio](http://gnuradio.org) and the [Qt GUI toolkit](https://www.qt.io/).
+[GNU Radio](https://gnuradio.org) and the [Qt GUI toolkit](https://www.qt.io/).
 Currently it works on Linux and Mac with hardware supported by gr-osmosdr,
 including Funcube Dongle, RTL-SDR, Airspy, HackRF, BladeRF, RFSpace, USRP and
 SoapySDR.
 
 Gqrx can operate as an AM/FM/SSB receiver with audio output or as an FFT-only
 instrument. There are also various hooks for interacting with external
-application using nertwork sockets.
+applications using network sockets.
 
 
 Download
 --------
 
-Gqrx is distributed as source code package and binaries for Linux and Mac.
+Gqrx is distributed as a source code package and binaries for Linux and Mac.
 Alternate Mac support is available through macports and homebrew.
-
-Please see http://gqrx.dk/download for a list of download resources.
 
 
 Usage
 -----
 
-It is strongly recommended to run the "volk_profile" gnuradio utility before
-running gqrx. This will detect and enable processor specific optimisations and
+It is strongly recommended to run the `volk_profile` utility before
+running gqrx. This will detect and enable processor-specific optimisations and
 will in many cases give a significant performance boost.
 
 The first time you start gqrx it will open a device configuration dialog.
@@ -42,11 +40,11 @@ airspy_rx, hackrf_transfer, qthid, etc.
 
 Gqrx supports multiple configurations and sessions if you have several devices
 or if you want to use the same device under different configurations. You can
-load a configuration from the GUI or using the -c command line argument. See
-"gqrx --help" for a complete list of command line arguments.
+load a configuration from the GUI or using the `-c` command line argument. See
+`gqrx --help` for a complete list of command line arguments.
 
 Tutorials and howtos are being written and published on the website
-http://gqrx.dk/
+https://gqrx.dk/
 
 
 Known problems
@@ -91,20 +89,20 @@ To compile gqrx from source you need the following dependencies:
     - Funcube Dongle Pro driver via gr-fcd
     - UHD driver via gr-uhd
     - Funcube Dongle Pro+ driver from https://github.com/dl1ksv/gr-fcdproplus
-    - RTL-SDR driver from http://cgit.osmocom.org/cgit/rtl-sdr/
-    - OsmoSDR driver from http://cgit.osmocom.org/cgit/osmo-sdr/
-    - HackRF Jawbreaker driver from http://greatscottgadgets.com/hackrf/
-    - Airspy driver from https://github.com/airspy/host
+    - RTL-SDR driver from https://git.osmocom.org/rtl-sdr
+    - OsmoSDR driver from https://git.osmocom.org/osmo-sdr
+    - HackRF driver from https://github.com/mossmann/hackrf
+    - Airspy driver from https://github.com/airspy/airspyone_host
     - SoapySDR from https://github.com/pothosware/SoapySDR
-    - RFSpace driver is bult in
-- gnuradio-osmosdr from http://cgit.osmocom.org/cgit/gr-osmosdr/
-- pulseaudio or portaudio (Linux only and optional)
+    - RFSpace driver is built in
+- gnuradio-osmosdr from https://git.osmocom.org/gr-osmosdr
+- pulseaudio or portaudio (Linux-only and optional)
 - Qt 5 with the following components:
     - Core
     - GUI
     - Network
     - Widgets
-    - Svg (runtime only)
+    - Svg (runtime-only)
 - pkg-config
 - cmake version >= 3.2.0 if you wish to build using cmake.
 
@@ -130,7 +128,7 @@ $ cd build
 $ cmake ..
 $ make
 </pre>
-On some systems, the default cmake release builds are "over optimized" and
+On some systems, the default cmake release builds are "over-optimized" and
 perform poorly. In that case try forcing -O2 using
 <pre>
 export CXXFLAGS=-O2
@@ -161,63 +159,73 @@ Credits and License
 Gqrx is designed and written by Alexandru Csete OZ9AEC, and it is licensed
 under the GNU General Public License.
 
-Some of the source files were adopted from Cutesdr by Moe Weatley and these
+Some of the source files were adapted from Cutesdr by Moe Weatley and these
 come with a Simplified BSD license.
 
-Following people and organisations have contributed to gqrx:
+The following people and organisations have contributed to gqrx:
 
-Arlecchino
-Alex Grinkov
-Alexander Fasching
-Andy Sloane
-Andrea Merello
-Andrea Montefusco, IW0HDV
-Anthony Willard
-Bastian Bloessl
-Pavel Stano
-Chris Kuethe
-Christian Lindner, DL2VCL
-charlylima
-Clayton Smith
-Darin Franklin
-Stefano Leucci
-Daniil Cherednik
-Dominic Chen
-Elias Önal
-Frank Brickle, AB2KT
-Federico Fuga
-Bob McGwier, N4HY
-Göran Weinholt, SA6CJK
-Grigory Shipunov
-Jiawei Chen
-Jiří Pinkava
-Jeff Long
-Josh Blum
-Kate Adams
-Kitware Inc.
-Michael Dickens
-Michael Lass
-Michael Tatarinov
-Moe Weatley
-Nadeem Hasan
-Nick Robinson, KE5YWP
-Nokia
-Pavel Milanes, CO7WT
-Phil Vachon
-Rob Frohne
-Stefano Leucci
-Sylvain Munaut
-Timothy Reaves
-Valentin Ochs
-Vesa Solonen
-Vincent Pelletier
-Will Scales
-Wolfgang Fritz, DK7OB
-Youssef Touil
-Zero_Chaos 
+* Alex Grinkov
+* Alexander Fasching
+* Andy Sloane
+* Andrea Merello
+* Andrea Montefusco, IW0HDV
+* Anthony Willard
+* Anton Blanchard
+* Bastian Bloessl
+* Ben Reese
+* Chris Kuethe
+* Christian Lindner, DL2VCL
+* charlylima
+* Clayton Smith, VE3IRR
+* Darin Franklin
+* Stefano Leucci
+* Daniil Cherednik
+* Dominic Chen
+* Elias Önal
+* Frank Brickle, AB2KT
+* Federico Fuga
+* Bob McGwier, N4HY
+* Gisle Vanem
+* Göran Weinholt, SA6CJK
+* Grigory Shipunov
+* Gwenhael Goavec-Merou
+* Jiawei Chen
+* Jiří Pinkava
+* Jeff Long
+* Josh Blum
+* Kate Adams
+* Kitware Inc.
+* Konrad Beckmann
+* luzpaz
+* Marco Savelli
+* Markus Kolb
+* Michael Dickens
+* Michael Lass
+* Michael Tatarinov
+* Moe Weatley
+* Nadeem Hasan
+* Nate Temple
+* Nick Robinson, KE5YWP
+* Nokia
+* Pavel Milanes, CO7WT
+* Pavel Stano
+* Phil Vachon
+* Rob Frohne
+* Ron Economos, W6RZ
+* Stefano Leucci
+* Sylvain Munaut
+* Tarmo Tanilsoo
+* Timothy Reaves
+* Valentin Ochs
+* Vesa Solonen
+* Vincent Pelletier
+* Will Scales
+* Wolfgang Fritz, DK7OB
+* Youssef Touil
+* Zero_Chaos
 
 Some of the icons are from:
-- The GNOME icon theme CC-SA 3.0 by GNOME icon artists 
+- The GNOME icon theme CC-SA 3.0 by GNOME icon artists
 - Tango icon theme, Public Domain by The people from the Tango! project
 - Mint-X icon theme, GPL by Clement Lefebvre
 
